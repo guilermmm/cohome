@@ -11,8 +11,12 @@ datasource db {
 }
 
 model User {
-  cuid     String @id @default(cuid())
-  email    String @unique
-  name     String
-  password String
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  password  String
+  birthdate DateTime
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

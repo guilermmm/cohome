@@ -1,26 +1,154 @@
-import { Injectable } from '@nestjs/common';
+import {
+  HttpCode,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-
+import { prisma } from 'src/utils/prisma';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { hashPassword } from 'src/utils/argon';
 @Injectable()
 export class UsersService {
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  async create(createUserDto: CreateUserDto) {
+    const { password, name, email, birthdate } = createUserDto;
+    const hashedPassword = await hashPassword(password);
+
+    try {
+      return await prisma.user.create({
+        data: {
+          name,
+          email,
+          birthdate,
+          password: hashedPassword,
+        },
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          createdAt: true,
+        },
+      });
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError) {
+        if (error.code === 'P2002')
+          throw new HttpException('E-mail já em uso.', HttpStatus.CONFLICT);
+      } else {
+        throw new HttpException(
+          'Internal Server Error',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
   }
 
-  findAll() {
-    return `This action returns all users`;
+  async findAll() {
+    try {
+      return prisma.user.findMany({
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          birthdate: true,
+          createdAt: true,
+        },
+      });
+    } catch (error) {
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(id: string) {
+    console.log(id);
+    try {
+      return await prisma.user.findUnique({
+        where: {
+          id,
+        },
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          birthdate: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      });
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError)
+        if (error.code === 'P2025')
+          throw new HttpException(
+            'Usuário não encontrado',
+            HttpStatus.NOT_FOUND,
+          );
+        else
+          throw new HttpException(
+            'Internal Server Error',
+            HttpStatus.INTERNAL_SERVER_ERROR,
+          );
+    }
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    const { name, email, birthdate } = updateUserDto;
+    try {
+      return prisma.user.update({
+        where: {
+          id,
+        },
+        data: {
+          name,
+          email,
+          birthdate,
+        },
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          birthdate: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      });
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError)
+        if (error.code === 'P2025')
+          throw new HttpException(
+            'Usuário não encontrado',
+            HttpStatus.NOT_FOUND,
+          );
+        else
+          throw new HttpException(
+            'Internal Server Error',
+            HttpStatus.INTERNAL_SERVER_ERROR,
+          );
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async remove(id: string) {
+    try {
+      await prisma.user.delete({
+        where: {
+          id,
+        },
+      });
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError)
+        if (error.code === 'P2025')
+          throw new HttpException(
+            'Usuário não encontrado',
+            HttpStatus.NOT_FOUND,
+          );
+        else
+          throw new HttpException(
+            'Internal Server Error',
+            HttpStatus.INTERNAL_SERVER_ERROR,
+          );
+    }
   }
 }
