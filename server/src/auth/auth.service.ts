@@ -25,12 +25,10 @@ export class AuthService {
         return {
           access_token: await this.jwtService.signAsync(payload),
         };
-      }
+      } else throw new UnauthorizedException();
       // TODO: Generate a JWT and return it here
       // instead of the user object
       return user;
-
-      throw new UnauthorizedException();
     } catch (error) {
       if (
         error instanceof UnauthorizedException ||
