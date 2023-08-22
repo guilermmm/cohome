@@ -6,16 +6,34 @@ import { useRouter } from "next/router";
 import React, { FormEvent, useState } from "react";
 import Logo from "@/assets/images/logo.png";
 import Image from "next/image";
+import { postLogin } from "@/services/routes/auth";
+import { useMutation } from "react-query";
 
 const Login = () => {
   const router = useRouter();
-
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    createLogin.mutate({
+      password,
+      email,
+    });
   };
+
+  const createLogin = useMutation({
+    mutationFn: postLogin,
+    onSuccess: (e) => {
+      localStorage.setItem("token", e.data.access_token);
+      router.push("/");
+    },
+    onError: (e) => {
+      if (axios.isAxiosError(e)) {
+        alert("Falha na autenticação: " + e.response?.data.message);
+      }
+    },
+  });
 
   return (
     <div className="h-screen w-screen bg-gray-300 flex items-center justify-center">

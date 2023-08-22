@@ -23,7 +23,6 @@ const CreateUser = () => {
       name,
       password,
       email,
-      birthdate: birthdate + "T00:00:00.000Z",
     });
   };
 
@@ -50,12 +49,6 @@ const CreateUser = () => {
         </div>
         <form className="flex flex-col gap-2" onSubmit={handleSubmit}>
           <Input label="Nome Completo*" value={name} onChange={setName} />
-          <Input
-            type="date"
-            label="Data de nascimento*"
-            value={birthdate}
-            onChange={setBirthDate}
-          />
           <Input label="Email*" value={email} onChange={setEmail} />
           <Input
             label="Senha*"

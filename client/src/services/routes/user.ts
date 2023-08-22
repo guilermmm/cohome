@@ -1,12 +1,11 @@
 import api from "../axios";
 
-export interface User {
+export type User = {
   id: string;
   name: string;
   email: string;
   password: string;
-  birthdate: string;
-}
+};
 
 export const getUser = () => api.get<User[]>("/users");
 
