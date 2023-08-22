@@ -12,7 +12,7 @@ import { hashPassword } from 'src/utils/argon';
 @Injectable()
 export class UsersService {
   async create(createUserDto: CreateUserDto) {
-    const { password, name, email, birthdate } = createUserDto;
+    const { password, name, email } = createUserDto;
     const hashedPassword = await hashPassword(password);
 
     try {
@@ -20,7 +20,6 @@ export class UsersService {
         data: {
           name,
           email,
-          birthdate,
           password: hashedPassword,
         },
         select: {
@@ -50,7 +49,6 @@ export class UsersService {
           id: true,
           email: true,
           name: true,
-          birthdate: true,
           createdAt: true,
         },
       });
@@ -73,7 +71,6 @@ export class UsersService {
           id: true,
           email: true,
           name: true,
-          birthdate: true,
           createdAt: true,
           updatedAt: true,
         },
@@ -94,7 +91,7 @@ export class UsersService {
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
-    const { name, email, birthdate } = updateUserDto;
+    const { name, email } = updateUserDto;
     try {
       return prisma.user.update({
         where: {
@@ -103,13 +100,11 @@ export class UsersService {
         data: {
           name,
           email,
-          birthdate,
         },
         select: {
           id: true,
           email: true,
           name: true,
-          birthdate: true,
           createdAt: true,
           updatedAt: true,
         },
