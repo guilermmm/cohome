@@ -64,7 +64,7 @@ export class GroupsService {
 
       return group;
     } catch (error) {
-      if (error instanceof NotFoundException) return error.getResponse();
+      if (error instanceof NotFoundException) throw error;
       throw new InternalServerErrorException();
     }
   }
