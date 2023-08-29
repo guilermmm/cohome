@@ -7,6 +7,7 @@ export type Login = {
 
 export type JWT = {
   access_token: string;
+  userId: string;
 };
 
 export const postLogin = async (login: Login) =>

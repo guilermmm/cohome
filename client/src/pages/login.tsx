@@ -25,7 +25,8 @@ const Login = () => {
   const createLogin = useMutation({
     mutationFn: postLogin,
     onSuccess: (e) => {
-      localStorage.setItem("token", e.data.access_token);
+      localStorage.setItem("token", "Bearer " + e.data.access_token);
+      localStorage.setItem("userId", e.data.userId);
       router.push("/");
     },
     onError: (e) => {
@@ -39,7 +40,7 @@ const Login = () => {
     <div className="h-screen w-screen bg-gray-300 flex items-center justify-center">
       <div className="flex flex-col gap-2 bg-gray-100 p-14 rounded-md ">
         <div className="flex justify-center">
-          <Image src={Logo} alt="mapsi-logo" width={100} />
+          <Image src={Logo} alt="logo" width={100} />
         </div>
         <div className="flex justify-center">
           <h1 className="text-cyan-800 font-bold text-2xl">CoHome</h1>

@@ -7,16 +7,27 @@ export type User = {
   password: string;
 };
 
-export const getUser = () => api.get<User[]>("/users");
+export const getUser = () =>
+  api.get<User[]>("/users", {
+    headers: { Authorization: localStorage.getItem("token") },
+  });
 
 export const postUser = (user: Omit<User, "id">) =>
   api.post<User>("/users", user);
 
-export const getOneUser = (id: string) => api.get<User>("/users/" + id);
+export const getOneUser = (id: string) =>
+  api.get<User>("/users/" + id, {
+    headers: { Authorization: localStorage.getItem("token") },
+  });
 
 export const putUser = (user: User) => {
   const id = user.id;
-  return api.put<User>("/users/" + id, user);
+  return api.put<User>("/users/" + id, user, {
+    headers: { Authorization: localStorage.getItem("token") },
+  });
 };
 
-export const deleteUser = (id: string) => api.delete("/users/" + id);
+export const deleteUser = (id: string) =>
+  api.delete("/users/" + id, {
+    headers: { Authorization: localStorage.getItem("token") },
+  });

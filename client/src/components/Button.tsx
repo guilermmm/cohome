@@ -2,8 +2,8 @@ import { classList } from "@/utils";
 import React from "react";
 
 type ButtonProps = {
-  text: string;
-  color: "cyan" | "gray" | "red" | "white-cyan";
+  text: React.ReactNode;
+  color: "cyan" | "gray" | "red" | "white-cyan" | "none";
   type?: "submit" | "button";
   disabled?: boolean;
   onClick?: any;
@@ -34,6 +34,8 @@ const Button = ({
             color === "red",
           "border-cyan-700 bg-cyan-700 text-white hover:bg-cyan-700":
             color === "white-cyan",
+          "border-transparent bg-transparent text-cyan-700 hover:bg-cyan-700 hover:text-white px-0.5 py-0.5":
+            color === "none",
         },
         {
           "w-full": width === "full",
