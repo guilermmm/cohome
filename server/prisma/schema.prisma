@@ -11,10 +11,21 @@ datasource db {
 }
 
 model User {
-  id       String @id @default(cuid())
-  email    String @unique
+  id       String  @id @default(cuid())
+  email    String  @unique
   name     String
   password String
+  Group    Group?  @relation(fields: [groupId], references: [id])
+  groupId  String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Group {
+  id    String @id @default(cuid())
+  name  String
+  users User[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -61,9 +61,8 @@ export class UsersService {
   }
 
   async findOne(id: string) {
-    console.log(id);
     try {
-      return await prisma.user.findUnique({
+      return await prisma.user.findUniqueOrThrow({
         where: {
           id,
         },
