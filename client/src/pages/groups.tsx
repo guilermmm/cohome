@@ -22,9 +22,8 @@ export default function Groups() {
   }, [router])
 
   const group = useQuery({
-    queryKey: ['group'],
+    queryKey: ['group', userId],
     queryFn: () => getOneGroup(userId as string),
-    enabled: userId !== undefined,
   })
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -65,7 +64,7 @@ export default function Groups() {
     <div className="h-screen w-screen bg-gray-300">
       <NavBar />
 
-      {group.data?.data.users ? (
+      {group.data?.data.usersInGroup ? (
         <div className=" m-10 rounded-md bg-white flex flex-col gap-3 p-4">
           <div className="flex justify-between">
             {' '}
@@ -80,9 +79,22 @@ export default function Groups() {
           </div>
 
           <div className="bg-gray-300 w-9/10 rounded p-2 flex justify-between">
-            <h1 className="text-gray-600 font-bold text-md mr-4 truncate">
-              {'Administrador:  ' + group.data.data.users[0].name}
-            </h1>
+            {group.data.data.usersInGroup.map(userInGroup => (
+              <div
+                key={userInGroup.user.id}
+                className="text-gray-600 font-bold text-md mr-4 truncate justify-between flex w-full items-center font-i"
+              >
+                <div>{userInGroup.user.name}</div>
+                <div className="text-xs text-cyan-700 italic font-medium">
+                  {userInGroup.isAdmin && ' Administrador'}
+                </div>
+              </div>
+            ))}
+            {/* <h1 className="text-gray-600 font-bold text-md mr-4 truncate">
+              {'Administrador:  ' +
+                group.data.data.usersInGroup.find(user => user.isAdmin)?.user
+                  .name}
+            </h1> */}
           </div>
 
           <div className="flex justify-start gap-4 ">

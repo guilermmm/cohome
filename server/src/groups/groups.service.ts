@@ -1,92 +1,91 @@
 import {
+  HttpCode,
+  HttpStatus,
   Injectable,
-  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
-import { prisma } from 'src/utils/prisma';
+import { PrismaService } from 'src/prisma.service';
 
 @Injectable()
 export class GroupsService {
+  constructor(private prisma: PrismaService) {}
   async create(createGroupDto: CreateGroupDto) {
-    try {
-      const { name, userId: adminId } = createGroupDto;
+    const { name, userId: adminId } = createGroupDto;
 
-      return await prisma.group.create({
-        data: {
-          name,
-          users: {
-            connect: {
-              id: adminId,
-            },
+    return await this.prisma.group.create({
+      data: {
+        name,
+        usersInGroup: {
+          create: {
+            userId: adminId,
+            isAdmin: true,
           },
         },
-        select: {
-          id: true,
-          name: true,
-          createdAt: true,
-        },
-      });
-    } catch (error) {
-      throw new InternalServerErrorException();
-    }
+      },
+      select: {
+        id: true,
+        name: true,
+        createdAt: true,
+      },
+    });
   }
 
   async findAll() {
-    try {
-      return await prisma.group.findMany({
-        include: {
-          users: true,
-        },
-      });
-    } catch (error) {
-      throw new InternalServerErrorException();
-    }
+    return await this.prisma.group.findMany({
+      include: {
+        usersInGroup: true,
+      },
+    });
   }
 
   async findOne(id: string) {
-    try {
-      const group = await prisma.group.findFirst({
-        where: {
-          users: {
-            some: {
-              id,
+    const group = await this.prisma.group.findFirst({
+      where: {
+        usersInGroup: {
+          some: {
+            userId: id,
+          },
+        },
+      },
+      include: {
+        usersInGroup: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+                createdAt: true,
+                updatedAt: true,
+              },
             },
           },
         },
-        include: {
-          users: true,
-        },
-      });
+      },
+    });
 
-      if (!group) throw new NotFoundException('Grupo não encontrado');
+    if (!group) throw new NotFoundException('Grupo não encontrado');
 
-      return group;
-    } catch (error) {
-      if (error instanceof NotFoundException) throw error;
-      throw new InternalServerErrorException();
-    }
+    return group;
   }
 
   async update(id: string, updateGroupDto: UpdateGroupDto) {
     const { name } = updateGroupDto;
-    try {
-      return await prisma.group.update({
-        where: {
-          id,
-        },
-        data: {
-          name,
-        },
-      });
-    } catch (error) {
-      throw new InternalServerErrorException();
-    }
+    return await this.prisma.group.update({
+      where: {
+        id,
+      },
+      data: {
+        name,
+      },
+    });
   }
 
+  @HttpCode(HttpStatus.NO_CONTENT)
   async remove(id: string) {
-    await prisma.group.delete({
+    await this.prisma.group.delete({
       where: {
         id,
       },

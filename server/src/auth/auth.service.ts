@@ -1,46 +1,35 @@
-import {
-  Injectable,
-  InternalServerErrorException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { PrismaService } from 'src/prisma.service';
 import { verifyPassword } from 'src/utils/argon';
-import { prisma } from 'src/utils/prisma';
 
 @Injectable()
 export class AuthService {
-  constructor(private jwtService: JwtService) {}
+  constructor(
+    private jwtService: JwtService,
+    private prisma: PrismaService,
+  ) {}
 
   async signIn(email: string, password: string) {
-    try {
-      const user = await prisma.user.findUniqueOrThrow({
-        where: {
-          email: email,
-        },
-      });
+    const user = await this.prisma.user.findUnique({
+      where: {
+        email: email,
+      },
+    });
 
-      if (await verifyPassword(user.password, password)) {
-        const payload = { sub: user.id, email: user.email };
-        return {
-          access_token: await this.jwtService.signAsync(payload),
-          userId: user.id,
-        };
-      } else throw new UnauthorizedException();
-      // TODO: Generate a JWT and return it here
-      // instead of the user object
-      return user;
-    } catch (error) {
-      if (
-        error instanceof UnauthorizedException ||
-        (error instanceof PrismaClientKnownRequestError &&
-          error.code === 'P2025')
-      )
-        throw new UnauthorizedException({
-          message: 'Usuário e/ou senha incorretos',
-        });
+    if (!user)
+      throw new UnauthorizedException('Usuário e/ou Senha incorretos.');
 
-      throw new InternalServerErrorException();
-    }
+    const isPasswordValid = await verifyPassword(password, user.password);
+
+    if (!isPasswordValid)
+      throw new UnauthorizedException('Usuário e/ou Senha incorretos.');
+
+    const payload = { sub: user.id, email: user.email };
+
+    return {
+      access_token: await this.jwtService.signAsync(payload),
+      userId: user.id,
+    };
   }
 }
