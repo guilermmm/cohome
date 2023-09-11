@@ -1,7 +1,7 @@
 import { User } from '@prisma/client';
 
 export class Group {
-  id: number;
+  id: string;
   name: string;
   users: User[];
   createdAt: Date;
