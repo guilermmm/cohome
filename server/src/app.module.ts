@@ -7,9 +7,10 @@ import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth/auth.guard';
 import { GroupsModule } from './groups/groups.module';
 import { ItemsModule } from './items/items.module';
+import { CategoriesModule } from './categories/categories.module';
 
 @Module({
-  imports: [AuthModule, UsersModule, GroupsModule, ItemsModule],
+  imports: [AuthModule, UsersModule, GroupsModule, ItemsModule, CategoriesModule],
   controllers: [AppController],
   providers: [
     AppService,
