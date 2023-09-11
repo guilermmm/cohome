@@ -46,12 +46,16 @@ const Login = () => {
           <h1 className="text-cyan-800 font-bold text-2xl">CoHome</h1>
         </div>
         <form className="flex flex-col gap-2" onSubmit={handleSubmit}>
-          <Input label="Email" value={email} onChange={setEmail} />
+          <Input
+            label="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
           <Input
             label="Senha"
             type="password"
             value={password}
-            onChange={setPassword}
+            onChange={(e) => setPassword(e.target.value)}
           />
           <div className="flex justify-between">
             <Link href="/cadastro">

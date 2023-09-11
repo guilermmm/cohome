@@ -15,7 +15,6 @@ const CreateUser = () => {
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
-  const [birthdate, setBirthDate] = useState("");
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -48,13 +47,21 @@ const CreateUser = () => {
           <h1 className="text-cyan-800 font-bold text-2xl">Criar conta</h1>
         </div>
         <form className="flex flex-col gap-2" onSubmit={handleSubmit}>
-          <Input label="Nome Completo*" value={name} onChange={setName} />
-          <Input label="Email*" value={email} onChange={setEmail} />
+          <Input
+            label="Nome Completo*"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+          <Input
+            label="Email*"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
           <Input
             label="Senha*"
             type="password"
             value={password}
-            onChange={setPassword}
+            onChange={(e) => setPassword(e.target.value)}
           />
           <div className="flex justify-between">
             <Link href="/login">
