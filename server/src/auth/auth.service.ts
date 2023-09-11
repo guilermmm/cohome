@@ -20,7 +20,7 @@ export class AuthService {
     if (!user)
       throw new UnauthorizedException('Usuário e/ou Senha incorretos.');
 
-    const isPasswordValid = await verifyPassword(password, user.password);
+    const isPasswordValid = await verifyPassword(user.password, password);
 
     if (!isPasswordValid)
       throw new UnauthorizedException('Usuário e/ou Senha incorretos.');
