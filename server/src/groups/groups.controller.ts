@@ -31,6 +31,20 @@ export class GroupsController {
     return this.groupsService.findOne(id);
   }
 
+  @Post(':id/users/:userId')
+  addUserToGroup(@Param('id') id: string, @Param('userId') userId: string) {
+    return this.groupsService.addUserToGroup(id, userId);
+  }
+
+  @HttpCode(204)
+  @Delete(':id/users/:userId')
+  removeUserFromGroup(
+    @Param('id') id: string,
+    @Param('userId') userId: string,
+  ) {
+    return this.groupsService.removeUserFromGroup(id, userId);
+  }
+
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateGroupDto: UpdateGroupDto) {
     return this.groupsService.update(id, updateGroupDto);

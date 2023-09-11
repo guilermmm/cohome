@@ -32,6 +32,62 @@ export class GroupsService {
     });
   }
 
+  async addUserToGroup(groupId: string, userId: string) {
+    const group = await this.prisma.group.findUnique({
+      where: {
+        id: groupId,
+      },
+    });
+
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!group) throw new NotFoundException('Grupo não encontrado');
+    if (!user) throw new NotFoundException('Usuário não encontrado');
+
+    return await this.prisma.group.update({
+      where: {
+        id: groupId,
+      },
+      data: {
+        usersInGroup: {
+          create: {
+            userId,
+          },
+        },
+      },
+    });
+  }
+
+  async removeUserFromGroup(groupId: string, userId: string) {
+    const group = await this.prisma.group.findUnique({
+      where: {
+        id: groupId,
+      },
+    });
+
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!group) throw new NotFoundException('Grupo não encontrado');
+    if (!user) throw new NotFoundException('Usuário não encontrado');
+
+    return await this.prisma.userInGroup.delete({
+      where: {
+        userId_groupId: {
+          userId,
+          groupId,
+        },
+      },
+    });
+  }
+
   async findAll() {
     return await this.prisma.group.findMany({
       include: {

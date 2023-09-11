@@ -1,0 +1,1 @@
+- fazer um guard p verificar se o usuário é o admin do grupo que ele ta tentando fazer modificações
