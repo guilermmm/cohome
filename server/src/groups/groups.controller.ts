@@ -11,6 +11,7 @@ import {
 import { GroupsService } from './groups.service';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
+import { ManageUserDto } from './dto/manage-user.dto';
 
 @Controller('groups')
 export class GroupsController {
@@ -31,18 +32,18 @@ export class GroupsController {
     return this.groupsService.findOne(id);
   }
 
-  @Post(':id/users/:userId')
-  addUserToGroup(@Param('id') id: string, @Param('userId') userId: string) {
-    return this.groupsService.addUserToGroup(id, userId);
+  @Post(':id/user/')
+  addUserToGroup(@Param('id') id: string, @Body() addUserDto: ManageUserDto) {
+    return this.groupsService.addUserToGroup(id, addUserDto);
   }
 
   @HttpCode(204)
-  @Delete(':id/users/:userId')
+  @Delete(':id/user/')
   removeUserFromGroup(
     @Param('id') id: string,
-    @Param('userId') userId: string,
+    @Body() removeUserDto: ManageUserDto,
   ) {
-    return this.groupsService.removeUserFromGroup(id, userId);
+    return this.groupsService.removeUserFromGroup(id, removeUserDto);
   }
 
   @Patch(':id')

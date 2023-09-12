@@ -7,6 +7,7 @@ import {
 import { CreateGroupDto } from './dto/create-group.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
 import { PrismaService } from 'src/prisma.service';
+import { ManageUserDto } from './dto/manage-user.dto';
 
 @Injectable()
 export class GroupsService {
@@ -32,7 +33,7 @@ export class GroupsService {
     });
   }
 
-  async addUserToGroup(groupId: string, userEmail: string) {
+  async addUserToGroup(groupId: string, addUserDto: ManageUserDto) {
     const group = await this.prisma.group.findUnique({
       where: {
         id: groupId,
@@ -41,7 +42,7 @@ export class GroupsService {
 
     const user = await this.prisma.user.findUnique({
       where: {
-        email: userEmail,
+        email: addUserDto.email,
       },
     });
 
@@ -62,7 +63,7 @@ export class GroupsService {
     });
   }
 
-  async removeUserFromGroup(groupId: string, userEmail: string) {
+  async removeUserFromGroup(groupId: string, removeUserDto: ManageUserDto) {
     const group = await this.prisma.group.findUnique({
       where: {
         id: groupId,
@@ -71,7 +72,7 @@ export class GroupsService {
 
     const user = await this.prisma.user.findUnique({
       where: {
-        email: userEmail,
+        email: removeUserDto.email,
       },
     });
 

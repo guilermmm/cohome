@@ -48,30 +48,6 @@ export class ItemsService {
     });
   }
 
-  // assignUser(id: string, userId: string) {
-  //   const user = this.prisma.user.findUnique({
-  //     where: { id: userId },
-  //     include: {
-  //       userInGroups: {
-  //         include: {
-  //           group: true,
-  //         },
-  //       },
-  //     },
-  //   });
-
-  //   if (!user) throw new NotFoundException('Usuário não encontrado');
-
-  //   return this.prisma.item.update({
-  //     where: { id },
-  //     data: {
-  //       user: {
-  //         connect: { id: userId },
-  //       },
-  //     },
-  //   });
-  // }
-
   update(id: string, updateItemDto: UpdateItemDto) {
     return this.prisma.item.update({
       where: { id },
@@ -83,6 +59,30 @@ export class ItemsService {
   remove(id: string) {
     return this.prisma.item.delete({
       where: { id },
+    });
+  }
+
+  assignUserToItem(userId: string, itemId: string) {
+    return this.prisma.item.update({
+      where: { id: itemId },
+      data: {
+        user: {
+          connect: {
+            id: userId,
+          },
+        },
+      },
+    });
+  }
+
+  removeUserFromItem(itemId: string) {
+    return this.prisma.item.update({
+      where: { id: itemId },
+      data: {
+        user: {
+          disconnect: true,
+        },
+      },
     });
   }
 }
