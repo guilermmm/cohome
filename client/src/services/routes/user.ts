@@ -22,7 +22,7 @@ export const getOneUser = (id: string) =>
 
 export const putUser = (user: User) => {
   const id = user.id;
-  return api.put<User>("/users/" + id, user, {
+  return api.patch<User>("/users/" + id, user, {
     headers: { Authorization: localStorage.getItem("token") },
   });
 };

@@ -2,7 +2,7 @@ import { Category } from "@/services/routes/category";
 import React from "react";
 
 type SelectProps = {
-  value: Category;
+  value: string;
   elements: Category[] | null;
   allCategories?: Category[] | null;
   onChange: (value: any) => void;
@@ -21,11 +21,11 @@ const Select = ({
       <select
         className="bg-gray-200 p-2 rounded-md text-slate-700 w-full disabled:text-black disabled:font-bold disabled:text-sm disabled:bg-gray-300 disabled:bg-opacity-30 disabled:text-opacity-80"
         onChange={onChange}
-        value={value?.id}
+        value={value}
         disabled={disabled}
       >
         <option value={""}>
-          {allCategories?.find((category) => value.id === category.id)?.name}
+          {allCategories?.find((category) => value === category.id)?.name}
         </option>
         {elements &&
           elements?.map((n) => (

@@ -26,7 +26,7 @@ export const getOneItem = (id: string) =>
 
 export const putItem = (item: Item) => {
   const id = item.id;
-  return api.put<Item>("/items/" + id, item, {
+  return api.patch<Item>("/items/" + id, item, {
     headers: { Authorization: localStorage.getItem("token") },
   });
 };

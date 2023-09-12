@@ -11,7 +11,7 @@ const NavBar = () => {
   return (
     <div className="h-14 w-full bg-white flex justify-between border-b-2 border-cyan-800">
       <div className="flex items-center ml-4">
-        <Image src={Logo} alt="mapsi-logo" width={50} />
+        <Image src={Logo} alt="logo" width={50} />
         <h1 className="text-cyan-800 font-bold text-xl pl-2">CoHome</h1>
       </div>
       <div className="flex items-center mx-4 gap-4">
