@@ -6,6 +6,8 @@ import {
   Patch,
   Param,
   Delete,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { ItemsService } from './items.service';
 import { CreateItemDto } from './dto/create-item.dto';
@@ -45,8 +47,20 @@ export class ItemsController {
     return this.itemsService.update(id, updateItemDto);
   }
 
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.itemsService.remove(id);
+  }
+
+  @Post(':id/user/:userId')
+  assignUserToItem(@Param('id') id: string, @Param('userId') userId: string) {
+    return this.itemsService.assignUserToItem(id, userId);
+  }
+
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Delete(':id/user')
+  removeUserFromItem(@Param('id') id: string) {
+    return this.itemsService.removeUserFromItem(id);
   }
 }

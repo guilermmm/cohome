@@ -7,7 +7,7 @@ import {
 import { CreateGroupDto } from './dto/create-group.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
 import { PrismaService } from 'src/prisma.service';
-import { ManageUserDto } from './dto/manage-user.dto';
+import { AddUserDto } from './dto/add-user.dto';
 
 @Injectable()
 export class GroupsService {
@@ -33,7 +33,34 @@ export class GroupsService {
     });
   }
 
-  async addUserToGroup(groupId: string, addUserDto: ManageUserDto) {
+  async findUsersInGroup(groupId: string) {
+    const group = await this.prisma.group.findUnique({
+      where: {
+        id: groupId,
+      },
+      include: {
+        usersInGroup: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+                createdAt: true,
+                updatedAt: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!group) throw new NotFoundException('Grupo não encontrado');
+
+    return group.usersInGroup;
+  }
+
+  async addUserToGroup(groupId: string, addUserDto: AddUserDto) {
     const group = await this.prisma.group.findUnique({
       where: {
         id: groupId,
@@ -63,7 +90,7 @@ export class GroupsService {
     });
   }
 
-  async removeUserFromGroup(groupId: string, removeUserDto: ManageUserDto) {
+  async removeUserFromGroup(groupId: string, userId: string) {
     const group = await this.prisma.group.findUnique({
       where: {
         id: groupId,
@@ -72,7 +99,7 @@ export class GroupsService {
 
     const user = await this.prisma.user.findUnique({
       where: {
-        email: removeUserDto.email,
+        id: userId,
       },
     });
 
@@ -82,7 +109,7 @@ export class GroupsService {
     return await this.prisma.userInGroup.delete({
       where: {
         userId_groupId: {
-          userId: user.id,
+          userId,
           groupId,
         },
       },

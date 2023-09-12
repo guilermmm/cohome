@@ -62,7 +62,7 @@ export class ItemsService {
     });
   }
 
-  assignUserToItem(userId: string, itemId: string) {
+  assignUserToItem(itemId: string, userId: string) {
     return this.prisma.item.update({
       where: { id: itemId },
       data: {

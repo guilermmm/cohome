@@ -7,11 +7,12 @@ import {
   Param,
   Delete,
   HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { GroupsService } from './groups.service';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
-import { ManageUserDto } from './dto/manage-user.dto';
+import { AddUserDto } from './dto/add-user.dto';
 
 @Controller('groups')
 export class GroupsController {
@@ -32,18 +33,23 @@ export class GroupsController {
     return this.groupsService.findOne(id);
   }
 
-  @Post(':id/user/')
-  addUserToGroup(@Param('id') id: string, @Body() addUserDto: ManageUserDto) {
+  @Get(':id/users')
+  findUsersInGroup(@Param('id') id: string) {
+    return this.groupsService.findUsersInGroup(id);
+  }
+
+  @Post(':id/user')
+  addUserToGroup(@Param('id') id: string, @Body() addUserDto: AddUserDto) {
     return this.groupsService.addUserToGroup(id, addUserDto);
   }
 
-  @HttpCode(204)
-  @Delete(':id/user/')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Delete(':id/user/:userId')
   removeUserFromGroup(
     @Param('id') id: string,
-    @Body() removeUserDto: ManageUserDto,
+    @Param('userId') userId: string,
   ) {
-    return this.groupsService.removeUserFromGroup(id, removeUserDto);
+    return this.groupsService.removeUserFromGroup(id, userId);
   }
 
   @Patch(':id')
@@ -51,7 +57,7 @@ export class GroupsController {
     return this.groupsService.update(id, updateGroupDto);
   }
 
-  @HttpCode(204)
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.groupsService.remove(id);
