@@ -47,7 +47,7 @@ export default function Itens() {
           <Button
             text={"Novo Item"}
             color={"cyan"}
-            onClick={() => router.push("/itens/novo")}
+            onClick={() => router.push("/items/create")}
           />
           {items.data?.data.map((n) =>
             n.groupId == group.data?.data.id ? (

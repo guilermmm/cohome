@@ -22,6 +22,20 @@ export const postGroup = (group: { name: string; userId: string }) =>
     headers: { Authorization: localStorage.getItem("token") },
   });
 
+export const postGroupMember = (group: { email: string; id: string }) =>
+  api.post<Group>(
+    "/groups/" + group.id + "/user",
+    { email: group.email },
+    {
+      headers: { Authorization: localStorage.getItem("token") },
+    }
+  );
+
+export const deleteGroupMember = (group: { userId: string; id: string }) =>
+  api.delete<Group>("/groups/" + group.id + "/user/" + group.userId, {
+    headers: { Authorization: localStorage.getItem("token") },
+  });
+
 export const getOneGroup = (id: string) =>
   api.get<Group>("/groups/" + id, {
     headers: { Authorization: localStorage.getItem("token") },

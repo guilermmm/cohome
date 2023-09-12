@@ -1,12 +1,7 @@
 import Button from "@/components/Button";
 import Input from "@/components/Input";
 import axios from "axios";
-import {
-  deleteItem,
-  getOneItem,
-  postItem,
-  putItem,
-} from "@/services/routes/item";
+import { postItem } from "@/services/routes/item";
 import { useMutation, useQuery } from "react-query";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -18,10 +13,10 @@ import { getCategory } from "@/services/routes/category";
 import Select from "@/components/Select";
 
 const Create = () => {
-  if (typeof window !== "undefined" && !localStorage.getItem("token")) {
-  }
   const router = useRouter();
-  const { id_item } = router.query;
+  if (typeof window !== "undefined" && !localStorage.getItem("token")) {
+    router.push("/login");
+  }
   const [userId, setUserId] = useState("");
 
   useEffect(() => {
@@ -45,57 +40,19 @@ const Create = () => {
   const [categoryId, setCategoryId] = useState("");
   const [description, setDescription] = useState("");
 
-  const itemData = useQuery({
-    queryKey: ["item"],
-    queryFn: () => getOneItem(id_item as string),
-    enabled: id_item !== undefined,
-    onSuccess: (data) => {
-      setCategoryId(data.data.categoryId);
-      setDescription(data.data.description ?? "");
-      setName(data.data.name);
-      setValue(data.data.value);
-    },
-  });
-
-  const editItem = useMutation({
-    mutationFn: putItem,
-    onSuccess: () => {
-      itemData.refetch();
-    },
-    onError: (e) => {
-      if (axios.isAxiosError(e)) {
-        alert("Falha na edição: " + e.response?.data);
-      }
-    },
-  });
-
-  const removeItem = useMutation({
-    mutationFn: deleteItem,
-    onSuccess: () => {
-      router.push("/items");
-    },
-    onError: (e) => {
-      if (axios.isAxiosError(e)) {
-        alert("Falha na remoção: " + e.response?.data);
-      }
-    },
-  });
-
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (name.length > 0 && categoryId.length > 0) {
-      editItem.mutate({
+      createItem.mutate({
         name,
         value,
         categoryId,
         groupId: group.data?.data.id as string,
-        description,
-        id: id_item as string,
+        description: description === "" ? undefined : description,
       });
-      router.push("/itens");
     } else {
       if (name === "") {
-        alert("Falha na edição: Nome não pode ficar em branco");
+        alert("Falha na criação: Nome não pode ficar em branco");
       }
       if (categoryId === "") {
         alert("Falha na edição: Categoria não pode ficar em branco");
@@ -103,7 +60,18 @@ const Create = () => {
     }
   };
 
-  console.log(categories);
+  const createItem = useMutation({
+    mutationFn: postItem,
+    onSuccess: (e) => {
+      router.push("/items");
+    },
+    onError: (e) => {
+      if (axios.isAxiosError(e)) {
+        alert("Falha no cadastro: " + e.response?.data);
+      }
+    },
+  });
+
   return (
     <>
       <div className="h-screen w-screen bg-gray-300">
@@ -140,10 +108,10 @@ const Create = () => {
                 onChange={(e) => setDescription(e.target.value)}
               />
               <div className="flex justify-between gap-2">
-                <Link href="/itens">
+                <Link href="/items">
                   <Button color="gray" text="Cancelar" />
                 </Link>
-                <Button color="cyan" text="Finalizar Edição" type="submit" />
+                <Button color="cyan" text="Finalizar Cadastro" type="submit" />
               </div>
             </form>
           </div>

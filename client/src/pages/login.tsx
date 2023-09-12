@@ -27,7 +27,7 @@ const Login = () => {
     onSuccess: (e) => {
       localStorage.setItem("token", "Bearer " + e.data.access_token);
       localStorage.setItem("userId", e.data.userId);
-      router.push("/");
+      router.push("/items");
     },
     onError: (e) => {
       if (axios.isAxiosError(e)) {
@@ -58,7 +58,7 @@ const Login = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
           <div className="flex justify-between">
-            <Link href="/cadastro">
+            <Link href="/signup">
               <Button color="gray" text="Criar conta" />
             </Link>
             <Button color="cyan" text="Entrar" type="submit" />

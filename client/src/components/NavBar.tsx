@@ -20,7 +20,7 @@ const NavBar = () => {
             color="cyan"
             text="Itens"
             onClick={() => {
-              router.push("/itens");
+              router.push("/items");
             }}
           />
           <Button

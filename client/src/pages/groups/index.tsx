@@ -1,15 +1,22 @@
 import Button from "@/components/Button";
 import Input from "@/components/Input";
 import NavBar from "@/components/NavBar";
-import { deleteGroup, getOneGroup, postGroup } from "@/services/routes/group";
+import {
+  deleteGroup,
+  deleteGroupMember,
+  getOneGroup,
+  postGroup,
+} from "@/services/routes/group";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { FormEvent, useEffect, useState } from "react";
 import { useMutation, useQuery } from "react-query";
+import { Trash2 } from "lucide-react";
 
 export default function Groups() {
   const router = useRouter();
   if (typeof window !== "undefined" && !localStorage.getItem("token")) {
+    router.push("/login");
   }
 
   const [name, setName] = useState("");
@@ -60,6 +67,18 @@ export default function Groups() {
     },
   });
 
+  const removeGroupMember = useMutation({
+    mutationFn: deleteGroupMember,
+    onSuccess: () => {
+      group.refetch();
+    },
+    onError: (e) => {
+      if (axios.isAxiosError(e)) {
+        alert("Falha na remoção: " + e.response?.data);
+      }
+    },
+  });
+
   return (
     <div className="h-screen w-screen bg-gray-300">
       <NavBar />
@@ -78,27 +97,43 @@ export default function Groups() {
             />
           </div>
 
-          <div className="bg-gray-300 w-9/10 rounded p-2 flex justify-between">
+          <div className="bg-white w-9/10 rounded p-2 flex flex-col gap-2">
             {group.data.data.usersInGroup.map((userInGroup) => (
               <div
                 key={userInGroup.user.id}
-                className="text-gray-600 font-bold text-md mr-4 truncate justify-between flex w-full items-center font-i"
+                className="text-gray-600 font-bold text-md mr-4 truncate justify-between flex w-full items-center font-i bg-gray-300 rounded p-2"
               >
                 <div>{userInGroup.user.name}</div>
                 <div className="text-xs text-cyan-700 italic font-medium">
                   {userInGroup.isAdmin && " Administrador"}
+                  <div className="text-xs text-red-700 italic font-medium">
+                    {" "}
+                    {!userInGroup.isAdmin && (
+                      <button
+                        className="text-sm h-3"
+                        color="none"
+                        onClick={() => {
+                          removeGroupMember.mutate({
+                            userId: userInGroup.user.id,
+                            id: group.data.data.id,
+                          });
+                        }}
+                      >
+                        <Trash2 className="h-4" />
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             ))}
-            {/* <h1 className="text-gray-600 font-bold text-md mr-4 truncate">
-              {'Administrador:  ' +
-                group.data.data.usersInGroup.find(user => user.isAdmin)?.user
-                  .name}
-            </h1> */}
           </div>
 
-          <div className="flex justify-start gap-4 ">
-            <Button color="cyan" text="Adicionar Membro" />
+          <div className="flex justify-center">
+            <Button
+              color="cyan"
+              text="Adicionar Membro"
+              onClick={() => router.push("/groups/newmember")}
+            />
           </div>
         </div>
       ) : (

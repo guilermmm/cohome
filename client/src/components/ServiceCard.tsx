@@ -1,34 +1,30 @@
 import { getCategory } from "@/services/routes/category";
 import { useMutation, useQuery } from "react-query";
 import Button from "./Button";
-import { deleteItem } from "@/services/routes/item";
+import { deleteService } from "@/services/routes/service";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { PenSquare } from "lucide-react";
 
-type ItemCardProps = {
+type ServiceCardProps = {
   id: string;
   name: string;
-  value: string;
   description?: string;
-  categoryId: string;
   children?: React.ReactNode;
   enabled?: boolean;
 };
 
-const ItemCard = ({
+const ServiceCard = ({
   name,
   id,
-  value,
   description,
-  categoryId,
   children,
   enabled = true,
-}: ItemCardProps) => {
+}: ServiceCardProps) => {
   const router = useRouter();
 
-  const removeItem = useMutation({
-    mutationFn: deleteItem,
+  const removeService = useMutation({
+    mutationFn: deleteService,
     onSuccess: () => {
       router.reload();
     },
@@ -54,29 +50,13 @@ const ItemCard = ({
             className="text-sm h-3"
             color="none"
             onClick={() => {
-              router.push("/items/details/" + id);
+              router.push("/services/details/" + id);
             }}
           >
             <PenSquare className="h-4" />
           </button>
         </div>
       </div>
-      <div className="flex flex-row">
-        <h2 className="text-gray-600 text-md mr-4 truncate">Categoria:</h2>
-        <h1 className="text-gray-600 font-bold text-md mr-4 truncate">
-          {categoryId}
-        </h1>
-      </div>
-      {value ? (
-        <div className="flex flex-row">
-          <h2 className="text-gray-600 text-md mr-4 truncate">Valor(R$):</h2>
-          <h1 className="text-gray-600 font-bold text-md mr-4 truncate">
-            {value}
-          </h1>
-        </div>
-      ) : (
-        <></>
-      )}
 
       {description ? (
         <div className="flex flex-row">
@@ -94,10 +74,10 @@ const ItemCard = ({
       <Button
         text={"Concluído"}
         color={"cyan"}
-        onClick={() => removeItem.mutate(id)}
+        onClick={() => removeService.mutate(id)}
       />
     </div>
   );
 };
 
-export default ItemCard;
+export default ServiceCard;
