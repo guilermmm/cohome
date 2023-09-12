@@ -32,7 +32,7 @@ export class GroupsService {
     });
   }
 
-  async addUserToGroup(groupId: string, userId: string) {
+  async addUserToGroup(groupId: string, userEmail: string) {
     const group = await this.prisma.group.findUnique({
       where: {
         id: groupId,
@@ -41,7 +41,7 @@ export class GroupsService {
 
     const user = await this.prisma.user.findUnique({
       where: {
-        id: userId,
+        email: userEmail,
       },
     });
 
@@ -55,14 +55,14 @@ export class GroupsService {
       data: {
         usersInGroup: {
           create: {
-            userId,
+            userId: user.id,
           },
         },
       },
     });
   }
 
-  async removeUserFromGroup(groupId: string, userId: string) {
+  async removeUserFromGroup(groupId: string, userEmail: string) {
     const group = await this.prisma.group.findUnique({
       where: {
         id: groupId,
@@ -71,7 +71,7 @@ export class GroupsService {
 
     const user = await this.prisma.user.findUnique({
       where: {
-        id: userId,
+        email: userEmail,
       },
     });
 
@@ -81,7 +81,7 @@ export class GroupsService {
     return await this.prisma.userInGroup.delete({
       where: {
         userId_groupId: {
-          userId,
+          userId: user.id,
           groupId,
         },
       },
