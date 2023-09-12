@@ -33,7 +33,7 @@ const CreateUser = () => {
     },
     onError: (e) => {
       if (axios.isAxiosError(e)) {
-        alert("Falha no cadastro: " + e.response?.data.message);
+        alert("Falha no cadastro: " + e.message);
       }
     },
   });

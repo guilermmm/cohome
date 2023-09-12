@@ -30,7 +30,7 @@ const ServiceCard = ({
     },
     onError: (e) => {
       if (axios.isAxiosError(e)) {
-        alert("Falha na remoção: " + e.response?.data.message);
+        alert("Falha na remoção: " + e.message);
       }
     },
   });

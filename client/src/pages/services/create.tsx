@@ -69,29 +69,42 @@ const Create = () => {
     <>
       <div className="h-screen w-screen bg-gray-300">
         <NavBar />
-        <div className="flex flex-col items-center mt-10">
-          <div className=" flex flex-col items-center gap-4 p-4 rounded-md max-w-fit bg-white">
-            <h1 className="text-cyan-800 font-bold text-xl">Novo Serviço</h1>
-            <form className="flex flex-col gap-2" onSubmit={handleSubmit}>
-              <Input
-                label="Nome*"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-              <TextArea
-                label="Descrição"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-              />
-              <div className="flex justify-between gap-2">
-                <Link href="/services">
-                  <Button color="gray" text="Cancelar" />
-                </Link>
-                <Button color="cyan" text="Finalizar Cadastro" type="submit" />
-              </div>
-            </form>
+        {group.data?.data.id ? (
+          <div className="flex flex-col items-center mt-10">
+            <div className=" flex flex-col items-center gap-4 p-4 rounded-md max-w-fit bg-white">
+              <h1 className="text-cyan-800 font-bold text-xl">Novo Serviço</h1>
+              <form className="flex flex-col gap-2" onSubmit={handleSubmit}>
+                <Input
+                  label="Nome*"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+                <TextArea
+                  label="Descrição"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                />
+                <div className="flex justify-between gap-2">
+                  <Link href="/services">
+                    <Button color="gray" text="Cancelar" />
+                  </Link>
+                  <Button
+                    color="cyan"
+                    text="Finalizar Cadastro"
+                    type="submit"
+                  />
+                </div>
+              </form>
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="flex justify-center mt-10">
+            {" "}
+            <h1 className="text-cyan-800 font-bold text-xl">
+              Você não está em nenhum grupo
+            </h1>
+          </div>
+        )}
       </div>
     </>
   );

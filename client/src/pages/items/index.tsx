@@ -42,32 +42,41 @@ export default function Itens() {
   return (
     <div className="h-fit min-h-screen w-screen bg-gray-300">
       <NavBar />
-      <div className="w-screen flex justify-center">
-        <div className="flex flex-col gap-4 p-4 max-w-sm ">
-          <Button
-            text={"Novo Item"}
-            color={"cyan"}
-            onClick={() => router.push("/items/create")}
-          />
-          {items.data?.data.map((n) =>
-            n.groupId == group.data?.data.id ? (
-              <ItemCard
-                id={n.id}
-                name={n.name}
-                value={n.value}
-                categoryId={
-                  categories.data?.data.find((c) => c.id === n.categoryId)
-                    ?.name as string
-                }
-                description={n.description}
-                key={n.id}
-              />
-            ) : (
-              <></>
-            )
-          )}
+      {group.data?.data.id ? (
+        <div className="w-screen flex justify-center">
+          <div className="flex flex-col gap-4 p-4 max-w-sm ">
+            <Button
+              text={"Novo Item"}
+              color={"cyan"}
+              onClick={() => router.push("/items/create")}
+            />
+            {items.data?.data.map((n) =>
+              n.groupId == group.data?.data.id ? (
+                <ItemCard
+                  id={n.id}
+                  name={n.name}
+                  value={n.value}
+                  categoryId={
+                    categories.data?.data.find((c) => c.id === n.categoryId)
+                      ?.name as string
+                  }
+                  description={n.description}
+                  key={n.id}
+                />
+              ) : (
+                <></>
+              )
+            )}
+          </div>
         </div>
-      </div>
+      ) : (
+        <div className="flex justify-center mt-10">
+          {" "}
+          <h1 className="text-cyan-800 font-bold text-xl">
+            Você não está em nenhum grupo
+          </h1>
+        </div>
+      )}
     </div>
   );
 }

@@ -31,7 +31,7 @@ const Login = () => {
     },
     onError: (e) => {
       if (axios.isAxiosError(e)) {
-        alert("Falha na autenticação: " + e.response?.data.message);
+        alert("Falha na autenticação: " + e.message);
       }
     },
   });
