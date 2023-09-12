@@ -48,7 +48,7 @@ model Group {
 model Item {
   id          String   @id @default(cuid())
   name        String
-  value       String
+  value       String?
   description String?
   category    Category @relation(fields: [categoryId], references: [id])
   categoryId  String

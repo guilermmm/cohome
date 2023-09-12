@@ -4,7 +4,7 @@ import { Category } from '@prisma/client';
 export class Item {
   id: string;
   name: string;
-  value: string;
+  value?: string;
   description?: string;
   category: Category;
   group: Group;
