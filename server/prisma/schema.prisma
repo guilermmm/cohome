@@ -16,8 +16,8 @@ model User {
   name         String
   password     String
   userInGroups UserInGroup[]
-  items        Item[]
-  services     Service[]
+  itemData     ItemData[]
+  serviceData  ServiceData[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -48,15 +48,25 @@ model Group {
 }
 
 model Item {
-  id          String   @id @default(cuid())
-  name        String
+  id         String     @id @default(cuid())
+  name       String
+  category   Category   @relation(fields: [categoryId], references: [id])
+  categoryId String
+  group      Group      @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  groupId    String
+  itemData   ItemData[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ItemData {
+  id          String  @id @default(cuid())
   value       String?
   description String?
-  category    Category @relation(fields: [categoryId], references: [id])
-  categoryId  String
-  group       Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
-  groupId     String
-  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  item        Item    @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  itemId      String
+  user        User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
   userId      String?
 
   createdAt DateTime @default(now())
@@ -64,11 +74,21 @@ model Item {
 }
 
 model Service {
-  id          String  @id @default(cuid())
+  id          String        @id @default(cuid())
   name        String
-  description String?
-  group       Group   @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  group       Group         @relation(fields: [groupId], references: [id], onDelete: Cascade)
   groupId     String
+  serviceData ServiceData[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ServiceData {
+  id          String  @id @default(cuid())
+  description String?
+  service     Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  serviceId   String
   user        User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
   userId      String?
 

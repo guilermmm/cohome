@@ -1,4 +1,9 @@
-import { HttpCode, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  HttpCode,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateItemDto } from './dto/create-item.dto';
 import { UpdateItemDto } from './dto/update-item.dto';
 import { PrismaService } from 'src/prisma.service';
@@ -9,7 +14,25 @@ export class ItemsService {
 
   create(createItemDto: CreateItemDto) {
     return this.prisma.item.create({
-      data: createItemDto,
+      data: {
+        name: createItemDto.name,
+        category: {
+          connect: {
+            id: createItemDto.categoryId,
+          },
+        },
+        group: {
+          connect: {
+            id: createItemDto.groupId,
+          },
+        },
+        itemData: {
+          create: {
+            description: createItemDto.description,
+            value: createItemDto.value,
+          },
+        },
+      },
     });
   }
 
@@ -62,17 +85,25 @@ export class ItemsService {
     });
   }
 
-  assignUserToItem(itemId: string, userId: string) {
-    return this.prisma.item.update({
-      where: { id: itemId },
-      data: {
-        user: {
-          connect: {
-            id: userId,
+  async assignUserToItem(itemId: string, userId: string) {
+    const itemData = await this.prisma.itemData.findFirst({
+      where: { itemId },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    if (!itemData) throw new NotFoundException(`Item não encontrado`);
+
+    if (!itemData?.userId)
+      return this.prisma.itemData.update({
+        where: { id: itemData.id },
+        data: {
+          user: {
+            connect: {
+              id: userId,
+            },
           },
         },
-      },
-    });
+      });
   }
 
   removeUserFromItem(itemId: string) {
