@@ -52,4 +52,15 @@ export class ServicesController {
   remove(@Param('id') id: string) {
     return this.servicesService.remove(id);
   }
+
+  @Post(':id/user/:userId')
+  assignUserToItem(@Param('id') id: string, @Param('userId') userId: string) {
+    return this.servicesService.assignUserToService(id, userId);
+  }
+
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Delete(':id/user')
+  removeUserFromItem(@Param('id') id: string) {
+    return this.servicesService.removeUserFromService(id);
+  }
 }

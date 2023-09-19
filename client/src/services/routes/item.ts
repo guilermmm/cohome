@@ -8,6 +8,7 @@ export type Item = {
   itemData: {
     description?: string;
     value: string;
+    userId?: string;
   }[];
 };
 
@@ -43,5 +44,15 @@ export const putItem = (
 
 export const deleteItem = (id: string) =>
   api.delete('/items/' + id, {
+    headers: { Authorization: localStorage.getItem('token') },
+  });
+
+export const postUserOnItem = (item: { id: string; userId: string }) =>
+  api.post<Item>('/items/' + item.id + '/user/' + item.userId, item, {
+    headers: { Authorization: localStorage.getItem('token') },
+  });
+
+export const deleteUserOnItem = (id: string) =>
+  api.delete('/items/' + id + '/user', {
     headers: { Authorization: localStorage.getItem('token') },
   });

@@ -23,7 +23,7 @@ export class ServicesService {
         },
         serviceData: {
           create: {
-            description: createServiceDto.description,
+            description: createServiceDto.serviceData.description,
           },
         },
       },
@@ -78,15 +78,15 @@ export class ServicesService {
   }
 
   async update(id: string, updateServiceDto: UpdateServiceDto) {
-    const latestServiceData = await this.findLatestServiceData(id);
+    const serviceData = await this.findLatestServiceData(id);
 
-    if (!latestServiceData)
-      throw new NotFoundException(`Serviço não encontrado`);
+    if (!serviceData) throw new NotFoundException(`Serviço não encontrado`);
 
     return this.prisma.serviceData.create({
       data: {
-        description:
-          updateServiceDto.description || latestServiceData.description,
+        description: updateServiceDto.serviceData
+          ? updateServiceDto.serviceData.description
+          : serviceData.description,
         service: {
           connect: {
             id,
@@ -102,7 +102,7 @@ export class ServicesService {
     });
   }
 
-  async assignUserToService(userId: string, serviceId: string) {
+  async assignUserToService(serviceId: string, userId: string) {
     const serviceData = await this.findLatestServiceData(serviceId);
 
     if (!serviceData) throw new NotFoundException(`Serviço não encontrado`);

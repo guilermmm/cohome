@@ -44,7 +44,9 @@ const Create = () => {
       createService.mutate({
         name,
         groupId: group.data?.data.id as string,
-        description: description === '' ? undefined : description,
+        serviceData: {
+          description: description === '' ? undefined : description,
+        },
       });
     } else {
       if (name === '') {

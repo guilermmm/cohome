@@ -56,6 +56,7 @@ export default function Itens() {
                   id={n.id}
                   name={n.name}
                   itemData={n.itemData[0]}
+                  currentUser={userId}
                   categoryId={
                     categories.data?.data.find((c) => c.id === n.categoryId)
                       ?.name as string

@@ -56,6 +56,8 @@ export class UsersService {
     });
 
     if (!user) throw new NotFoundException('Usuário não encontrado.');
+
+    return user;
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {

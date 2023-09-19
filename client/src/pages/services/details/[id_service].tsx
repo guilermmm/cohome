@@ -44,11 +44,11 @@ const Create = () => {
   const [description, setDescription] = useState('');
 
   const serviceData = useQuery({
-    queryKey: ['service'],
+    queryKey: ['service', id_service],
     queryFn: () => getOneService(id_service as string),
     enabled: id_service !== undefined,
     onSuccess: (data) => {
-      setDescription(data.data.description ?? '');
+      setDescription(data.data.serviceData[0].description ?? '');
       setName(data.data.name);
     },
   });
@@ -83,7 +83,9 @@ const Create = () => {
       editService.mutate({
         name,
         groupId: group.data?.data.id as string,
-        description,
+        serviceData: {
+          description,
+        },
         id: id_service as string,
       });
       router.push('/services');
@@ -107,6 +109,7 @@ const Create = () => {
                 label="Nome*"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
+                disabled={true}
               />
 
               <TextArea

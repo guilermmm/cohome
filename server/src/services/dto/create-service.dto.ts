@@ -1,5 +1,7 @@
 export class CreateServiceDto {
   name: string;
-  description?: string;
+  serviceData: {
+    description?: string;
+  };
   groupId: string;
 }

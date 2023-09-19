@@ -55,7 +55,8 @@ export default function Itens() {
                 <ServiceCard
                   id={n.id}
                   name={n.name}
-                  description={n.description}
+                  serviceData={n.serviceData[0]}
+                  currentUser={userId}
                   key={n.id}
                 />
               ) : (

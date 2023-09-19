@@ -1,15 +1,24 @@
 import { getCategory } from '@/services/routes/category';
 import { useMutation, useQuery } from 'react-query';
 import Button from './Button';
-import { deleteService } from '@/services/routes/service';
+import {
+  deleteService,
+  deleteUserOnService,
+  postUserOnService,
+} from '@/services/routes/service';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import { PenSquare } from 'lucide-react';
+import { getOneUser } from '@/services/routes/user';
 
 type ServiceCardProps = {
   id: string;
   name: string;
-  description?: string;
+  serviceData: {
+    description?: string;
+    userId?: string;
+  };
+  currentUser?: string;
   children?: React.ReactNode;
   enabled?: boolean;
 };
@@ -17,14 +26,46 @@ type ServiceCardProps = {
 const ServiceCard = ({
   name,
   id,
-  description,
+  serviceData,
   children,
+  currentUser,
   enabled = true,
 }: ServiceCardProps) => {
   const router = useRouter();
 
+  const { description, userId } = serviceData;
+
+  const userData = useQuery({
+    queryKey: ['serviceUser', userId],
+    queryFn: () => getOneUser(userId as string),
+  }).data?.data;
+
   const removeService = useMutation({
     mutationFn: deleteService,
+    onSuccess: () => {
+      router.reload();
+    },
+    onError: (e) => {
+      if (axios.isAxiosError(e)) {
+        alert('Falha na remoção: ' + e.response?.data.message);
+      }
+    },
+  });
+
+  const createUserOnService = useMutation({
+    mutationFn: postUserOnService,
+    onSuccess: (e) => {
+      router.reload();
+    },
+    onError: (e) => {
+      if (axios.isAxiosError(e)) {
+        alert('Falha no vínculo: ' + e.response?.data.message);
+      }
+    },
+  });
+
+  const removeUserOnService = useMutation({
+    mutationFn: deleteUserOnService,
     onSuccess: () => {
       router.reload();
     },
@@ -71,11 +112,39 @@ const ServiceCard = ({
       {}
 
       {children}
-      <Button
-        text={'Concluído'}
-        color={'cyan'}
-        onClick={() => removeService.mutate(id)}
-      />
+      {currentUser === userId ? (
+        <div className="flex justify-between gap-2">
+          <Button
+            text={'Desvincular-se'}
+            color={'gray'}
+            onClick={() => removeUserOnService.mutate(id)}
+          />
+
+          <Button
+            text={'Concluído'}
+            color={'cyan'}
+            onClick={() => removeService.mutate(id)}
+          />
+        </div>
+      ) : !userId ? (
+        <Button
+          text={'Vincular-se'}
+          color={'cyan'}
+          onClick={() =>
+            createUserOnService.mutate({
+              id: id,
+              userId: currentUser as string,
+            })
+          }
+        />
+      ) : (
+        <div className="flex flex-row bg-slate-300 gap-2 rounded-sm p-1">
+          <h2 className="text-gray-600 text-sm mr-4">Vinculado a:</h2>
+          <h1 className="text-gray-600 font-bold text-sm mr-4 break-all">
+            {userData?.name}
+          </h1>
+        </div>
+      )}
     </div>
   );
 };

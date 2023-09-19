@@ -47,7 +47,7 @@ const Create = () => {
   const [description, setDescription] = useState('');
 
   const itemData = useQuery({
-    queryKey: ['item'],
+    queryKey: ['item', id_item],
     queryFn: () => getOneItem(id_item as string),
     enabled: id_item !== undefined,
     onSuccess: (data) => {
@@ -106,7 +106,6 @@ const Create = () => {
     }
   };
 
-  console.log(categories);
   return (
     <>
       <div className="h-screen w-screen bg-gray-300">
@@ -119,6 +118,7 @@ const Create = () => {
                 label="Nome*"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
+                disabled={true}
               />
               <h1 className="text-gray-600 font-bold text-l text-sm">
                 Categoria*
@@ -129,6 +129,7 @@ const Create = () => {
                 onChange={(e) => {
                   setCategoryId(e.target.value);
                 }}
+                disabled={true}
               />
               <Input
                 label="Valor(R$)"
