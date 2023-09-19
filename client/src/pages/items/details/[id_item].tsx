@@ -52,9 +52,9 @@ const Create = () => {
     enabled: id_item !== undefined,
     onSuccess: (data) => {
       setCategoryId(data.data.categoryId);
-      setDescription(data.data.description ?? "");
+      setDescription(data.data.itemData.description ?? "");
       setName(data.data.name);
-      setValue(data.data.value);
+      setValue(data.data.itemData.value);
     },
   });
 
@@ -87,10 +87,12 @@ const Create = () => {
     if (name.length > 0 && categoryId.length > 0) {
       editItem.mutate({
         name,
-        value,
+        itemData: {
+          value,
+          description,
+        },
         categoryId,
         groupId: group.data?.data.id as string,
-        description,
         id: id_item as string,
       });
       router.push("/items");

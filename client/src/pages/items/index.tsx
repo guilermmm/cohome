@@ -55,12 +55,12 @@ export default function Itens() {
                 <ItemCard
                   id={n.id}
                   name={n.name}
-                  value={n.value}
+                  value={n.itemData.value}
                   categoryId={
                     categories.data?.data.find((c) => c.id === n.categoryId)
                       ?.name as string
                   }
-                  description={n.description}
+                  description={n.itemData.description}
                   key={n.id}
                 />
               ) : (

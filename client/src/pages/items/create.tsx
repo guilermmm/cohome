@@ -45,10 +45,12 @@ const Create = () => {
     if (name.length > 0 && categoryId.length > 0) {
       createItem.mutate({
         name,
-        value,
+        itemData: {
+          value,
+          description: description === "" ? undefined : description,
+        },
         categoryId,
         groupId: group.data?.data.id as string,
-        description: description === "" ? undefined : description,
       });
     } else {
       if (name === "") {

@@ -3,10 +3,12 @@ import api from "../axios";
 export type Item = {
   id: string;
   name: string;
-  value: string;
-  description?: string;
   categoryId: string;
   groupId: string;
+  itemData: {
+    description?: string;
+    value: string;
+  };
 };
 
 export const getItem = () =>
