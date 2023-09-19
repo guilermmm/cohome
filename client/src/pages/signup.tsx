@@ -1,20 +1,20 @@
-import Button from "@/components/Button";
-import Input from "@/components/Input";
-import axios from "axios";
-import Link from "next/link";
-import Image from "next/image";
-import { useRouter } from "next/router";
-import React, { FormEvent, useState } from "react";
-import { postUser } from "@/services/routes/user";
-import { useMutation } from "react-query";
-import Logo from "@/assets/images/logo.png";
+import Button from '@/components/Button';
+import Input from '@/components/Input';
+import axios from 'axios';
+import Link from 'next/link';
+import Image from 'next/image';
+import { useRouter } from 'next/router';
+import React, { FormEvent, useState } from 'react';
+import { postUser } from '@/services/routes/user';
+import { useMutation } from 'react-query';
+import Logo from '@/assets/images/logo.png';
 
 const CreateUser = () => {
   const router = useRouter();
 
-  const [name, setName] = useState("");
-  const [password, setPassword] = useState("");
-  const [email, setEmail] = useState("");
+  const [name, setName] = useState('');
+  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('');
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -28,12 +28,12 @@ const CreateUser = () => {
   const createUser = useMutation({
     mutationFn: postUser,
     onSuccess: () => {
-      alert("Conta cadastrada com sucesso!");
-      router.push("/login");
+      alert('Conta cadastrada com sucesso!');
+      router.push('/login');
     },
     onError: (e) => {
       if (axios.isAxiosError(e)) {
-        alert("Falha no cadastro: " + e.message);
+        alert('Falha no cadastro: ' + e.response?.data.message);
       }
     },
   });

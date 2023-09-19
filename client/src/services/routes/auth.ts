@@ -1,4 +1,4 @@
-import api from "../axios";
+import api from '../axios';
 
 export type Login = {
   email: string;
@@ -11,4 +11,4 @@ export type JWT = {
 };
 
 export const postLogin = async (login: Login) =>
-  api.post<JWT>("/auth/login", login);
+  api.post<JWT>('/auth/login', login);

@@ -1,34 +1,34 @@
-import Button from "@/components/Button";
-import Input from "@/components/Input";
-import NavBar from "@/components/NavBar";
+import Button from '@/components/Button';
+import Input from '@/components/Input';
+import NavBar from '@/components/NavBar';
 import {
   deleteGroup,
   getOneGroup,
   postGroup,
   postGroupMember,
-} from "@/services/routes/group";
-import axios from "axios";
-import { useRouter } from "next/router";
-import { FormEvent, useEffect, useState } from "react";
-import { useMutation, useQuery } from "react-query";
+} from '@/services/routes/group';
+import axios from 'axios';
+import { useRouter } from 'next/router';
+import { FormEvent, useEffect, useState } from 'react';
+import { useMutation, useQuery } from 'react-query';
 
 export default function Groups() {
   const router = useRouter();
-  if (typeof window !== "undefined" && !localStorage.getItem("token")) {
-    router.push("/login");
+  if (typeof window !== 'undefined' && !localStorage.getItem('token')) {
+    router.push('/login');
   }
 
-  const [email, setEmail] = useState("");
-  const [userId, setUserId] = useState("");
+  const [email, setEmail] = useState('');
+  const [userId, setUserId] = useState('');
 
   useEffect(() => {
-    setUserId((localStorage?.getItem("userId") as string) ?? "");
+    setUserId((localStorage?.getItem('userId') as string) ?? '');
 
-    if (!localStorage.getItem("token")) router.push("/");
+    if (!localStorage.getItem('token')) router.push('/');
   }, [router]);
 
   const group = useQuery({
-    queryKey: ["group", userId],
+    queryKey: ['group', userId],
     queryFn: () => getOneGroup(userId as string),
   });
 
@@ -40,8 +40,8 @@ export default function Groups() {
         id: group.data?.data.id as string,
       });
     } else {
-      if (email === "") {
-        alert("Falha na edição: Email não pode ficar em branco");
+      if (email === '') {
+        alert('Falha na edição: Email não pode ficar em branco');
       }
     }
   };
@@ -49,11 +49,11 @@ export default function Groups() {
   const createGroupMember = useMutation({
     mutationFn: postGroupMember,
     onSuccess: (e) => {
-      router.push("/groups");
+      router.push('/groups');
     },
     onError: (e) => {
       if (axios.isAxiosError(e)) {
-        alert("Falha no cadastro: " + e.message);
+        alert('Falha no cadastro: ' + e.response?.data.message);
       }
     },
   });

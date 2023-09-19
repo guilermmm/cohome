@@ -1,9 +1,9 @@
-import { useRouter } from "next/router";
-import React from "react";
-import Logo from "@/assets/images/logo.png";
-import Image from "next/image";
-import Button from "./Button";
-import { LogOut } from "lucide-react";
+import { useRouter } from 'next/router';
+import React from 'react';
+import Logo from '@/assets/images/logo.png';
+import Image from 'next/image';
+import Button from './Button';
+import { LogOut } from 'lucide-react';
 
 const NavBar = () => {
   const router = useRouter();
@@ -20,21 +20,21 @@ const NavBar = () => {
             color="cyan"
             text="Itens"
             onClick={() => {
-              router.push("/items");
+              router.push('/items');
             }}
           />
           <Button
             color="cyan"
             text="Serviços"
             onClick={() => {
-              router.push("/services");
+              router.push('/services');
             }}
           />
           <Button
             color="cyan"
             text="Grupo"
             onClick={() => {
-              router.push("/groups");
+              router.push('/groups');
             }}
           />
         </div>
@@ -43,8 +43,8 @@ const NavBar = () => {
             color="none"
             text={<LogOut />}
             onClick={() => {
-              localStorage.removeItem("token");
-              router.push("/login");
+              localStorage.removeItem('token');
+              router.push('/login');
             }}
           />
         </div>

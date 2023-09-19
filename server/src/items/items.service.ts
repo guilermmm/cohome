@@ -27,8 +27,8 @@ export class ItemsService {
         },
         itemData: {
           create: {
-            description: createItemDto.description,
-            value: createItemDto.value,
+            description: createItemDto.itemData.description,
+            value: createItemDto.itemData.value,
           },
         },
       },
@@ -52,6 +52,10 @@ export class ItemsService {
       where: { id },
       include: {
         category: true,
+        itemData: {
+          orderBy: { createdAt: 'desc' },
+          take: 1,
+        },
       },
     });
   }
@@ -95,8 +99,12 @@ export class ItemsService {
 
     return this.prisma.itemData.create({
       data: {
-        description: updateItemDto.description || itemData.description,
-        value: updateItemDto.value || itemData.value,
+        description: updateItemDto.itemData
+          ? updateItemDto.itemData.description
+          : itemData.description,
+        value: updateItemDto.itemData
+          ? updateItemDto.itemData.value
+          : itemData.value,
         item: {
           connect: {
             id,

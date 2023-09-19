@@ -1,7 +1,9 @@
 export class CreateItemDto {
   name: string;
-  value?: string;
-  description?: string;
+  itemData: {
+    value?: string;
+    description?: string;
+  };
   categoryId: string;
   groupId: string;
 }

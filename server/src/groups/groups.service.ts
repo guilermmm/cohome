@@ -20,8 +20,12 @@ export class GroupsService {
         name,
         usersInGroup: {
           create: {
-            userId: adminId,
             isAdmin: true,
+            user: {
+              connect: {
+                id: adminId,
+              },
+            },
           },
         },
       },

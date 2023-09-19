@@ -1,5 +1,5 @@
-import { Category } from "@/services/routes/category";
-import React from "react";
+import { Category } from '@/services/routes/category';
+import React from 'react';
 
 type SelectProps = {
   value: string;
@@ -24,7 +24,7 @@ const Select = ({
         value={value}
         disabled={disabled}
       >
-        <option value={""}>
+        <option value={''}>
           {allCategories?.find((category) => value === category.id)?.name}
         </option>
         {elements &&

@@ -8,27 +8,22 @@ import {
   Delete,
   HttpCode,
   HttpStatus,
-  UseGuards,
 } from '@nestjs/common';
 import { GroupsService } from './groups.service';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
 import { AddUserDto } from './dto/add-user.dto';
-import { GroupsGuard } from './groups.guard';
-import { SkipValidation } from 'src/utils/decorators';
 
 @Controller('groups')
-@UseGuards(GroupsGuard)
+// @UseGuards(GroupsGuard)
 export class GroupsController {
   constructor(private readonly groupsService: GroupsService) {}
 
-  @SkipValidation()
   @Post()
   create(@Body() createGroupDto: CreateGroupDto) {
     return this.groupsService.create(createGroupDto);
   }
 
-  @SkipValidation()
   @Get()
   findAll() {
     return this.groupsService.findAll();

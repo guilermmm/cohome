@@ -1,18 +1,18 @@
-import Button from "@/components/Button";
-import Input from "@/components/Input";
-import axios from "axios";
-import Link from "next/link";
-import { useRouter } from "next/router";
-import React, { FormEvent, useState } from "react";
-import Logo from "@/assets/images/logo.png";
-import Image from "next/image";
-import { postLogin } from "@/services/routes/auth";
-import { useMutation } from "react-query";
+import Button from '@/components/Button';
+import Input from '@/components/Input';
+import axios from 'axios';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import React, { FormEvent, useState } from 'react';
+import Logo from '@/assets/images/logo.png';
+import Image from 'next/image';
+import { postLogin } from '@/services/routes/auth';
+import { useMutation } from 'react-query';
 
 const Login = () => {
   const router = useRouter();
-  const [password, setPassword] = useState("");
-  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('');
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -25,13 +25,13 @@ const Login = () => {
   const createLogin = useMutation({
     mutationFn: postLogin,
     onSuccess: (e) => {
-      localStorage.setItem("token", "Bearer " + e.data.access_token);
-      localStorage.setItem("userId", e.data.userId);
-      router.push("/items");
+      localStorage.setItem('token', 'Bearer ' + e.data.access_token);
+      localStorage.setItem('userId', e.data.userId);
+      router.push('/items');
     },
     onError: (e) => {
       if (axios.isAxiosError(e)) {
-        alert("Falha na autenticação: " + e.message);
+        alert('Falha na autenticação: ' + e.response?.data.message);
       }
     },
   });

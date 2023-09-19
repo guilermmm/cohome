@@ -34,6 +34,10 @@ export class ServicesService {
     return this.prisma.service.findMany({
       include: {
         group: true,
+        serviceData: {
+          orderBy: { createdAt: 'desc' },
+          take: 1,
+        },
       },
     });
   }
@@ -41,6 +45,12 @@ export class ServicesService {
   findOne(id: string) {
     return this.prisma.service.findUnique({
       where: { id },
+      include: {
+        serviceData: {
+          orderBy: { createdAt: 'desc' },
+          take: 1,
+        },
+      },
     });
   }
 

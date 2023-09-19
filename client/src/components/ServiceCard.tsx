@@ -1,10 +1,10 @@
-import { getCategory } from "@/services/routes/category";
-import { useMutation, useQuery } from "react-query";
-import Button from "./Button";
-import { deleteService } from "@/services/routes/service";
-import axios from "axios";
-import { useRouter } from "next/router";
-import { PenSquare } from "lucide-react";
+import { getCategory } from '@/services/routes/category';
+import { useMutation, useQuery } from 'react-query';
+import Button from './Button';
+import { deleteService } from '@/services/routes/service';
+import axios from 'axios';
+import { useRouter } from 'next/router';
+import { PenSquare } from 'lucide-react';
 
 type ServiceCardProps = {
   id: string;
@@ -30,7 +30,7 @@ const ServiceCard = ({
     },
     onError: (e) => {
       if (axios.isAxiosError(e)) {
-        alert("Falha na remoção: " + e.message);
+        alert('Falha na remoção: ' + e.response?.data.message);
       }
     },
   });
@@ -38,7 +38,7 @@ const ServiceCard = ({
     <div className="bg-white rounded p-4 flex flex-col">
       <div className="flex flex-row justify-between">
         <div className=" flex flex-row">
-          {" "}
+          {' '}
           <h2 className="text-gray-600 text-md mr-4 truncate">Nome: </h2>
           <h1 className="text-gray-600 font-bold text-md mr-4 truncate">
             {name}
@@ -50,7 +50,7 @@ const ServiceCard = ({
             className="text-sm h-3"
             color="none"
             onClick={() => {
-              router.push("/services/details/" + id);
+              router.push('/services/details/' + id);
             }}
           >
             <PenSquare className="h-4" />
@@ -72,8 +72,8 @@ const ServiceCard = ({
 
       {children}
       <Button
-        text={"Concluído"}
-        color={"cyan"}
+        text={'Concluído'}
+        color={'cyan'}
         onClick={() => removeService.mutate(id)}
       />
     </div>

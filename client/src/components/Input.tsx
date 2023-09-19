@@ -1,17 +1,17 @@
-import React from "react";
+import React from 'react';
 
 type InputProps = {
   label: string;
   value: any;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   disabled?: boolean;
-  type?: "text" | "password" | "date" | "number";
+  type?: 'text' | 'password' | 'date' | 'number';
 };
 
 const Input = ({
   label,
   value,
-  type = "text",
+  type = 'text',
   onChange,
   disabled = false,
 }: InputProps) => {

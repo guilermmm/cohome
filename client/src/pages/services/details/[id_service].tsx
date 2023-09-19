@@ -1,54 +1,54 @@
-import Button from "@/components/Button";
-import Input from "@/components/Input";
-import axios from "axios";
+import Button from '@/components/Button';
+import Input from '@/components/Input';
+import axios from 'axios';
 import {
   deleteService,
   getOneService,
   postService,
   putService,
-} from "@/services/routes/service";
-import { useMutation, useQuery } from "react-query";
-import Link from "next/link";
-import { useRouter } from "next/router";
-import React, { FormEvent, useEffect, useState } from "react";
-import NavBar from "@/components/NavBar";
-import TextArea from "@/components/TextArea";
-import { getOneGroup } from "@/services/routes/group";
-import { getCategory } from "@/services/routes/category";
+} from '@/services/routes/service';
+import { useMutation, useQuery } from 'react-query';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import React, { FormEvent, useEffect, useState } from 'react';
+import NavBar from '@/components/NavBar';
+import TextArea from '@/components/TextArea';
+import { getOneGroup } from '@/services/routes/group';
+import { getCategory } from '@/services/routes/category';
 
 const Create = () => {
   const router = useRouter();
-  if (typeof window !== "undefined" && !localStorage.getItem("token")) {
-    router.push("/login");
+  if (typeof window !== 'undefined' && !localStorage.getItem('token')) {
+    router.push('/login');
   }
   const { id_service } = router.query;
-  const [userId, setUserId] = useState("");
+  const [userId, setUserId] = useState('');
 
   useEffect(() => {
-    setUserId((localStorage?.getItem("userId") as string) ?? "");
+    setUserId((localStorage?.getItem('userId') as string) ?? '');
 
-    if (!localStorage.getItem("token")) router.push("/");
+    if (!localStorage.getItem('token')) router.push('/');
   }, [router]);
 
   const group = useQuery({
-    queryKey: ["group", userId],
+    queryKey: ['group', userId],
     queryFn: () => getOneGroup(userId as string),
   });
 
   const categories = useQuery({
-    queryKey: ["categories"],
+    queryKey: ['categories'],
     queryFn: () => getCategory(),
   }).data?.data;
 
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
 
   const serviceData = useQuery({
-    queryKey: ["service"],
+    queryKey: ['service'],
     queryFn: () => getOneService(id_service as string),
     enabled: id_service !== undefined,
     onSuccess: (data) => {
-      setDescription(data.data.description ?? "");
+      setDescription(data.data.description ?? '');
       setName(data.data.name);
     },
   });
@@ -60,7 +60,7 @@ const Create = () => {
     },
     onError: (e) => {
       if (axios.isAxiosError(e)) {
-        alert("Falha na edição: " + e.response?.data);
+        alert('Falha na edição: ' + e.response?.data);
       }
     },
   });
@@ -68,11 +68,11 @@ const Create = () => {
   const removeService = useMutation({
     mutationFn: deleteService,
     onSuccess: () => {
-      router.push("/services");
+      router.push('/services');
     },
     onError: (e) => {
       if (axios.isAxiosError(e)) {
-        alert("Falha na remoção: " + e.response?.data);
+        alert('Falha na remoção: ' + e.response?.data);
       }
     },
   });
@@ -86,10 +86,10 @@ const Create = () => {
         description,
         id: id_service as string,
       });
-      router.push("/services");
+      router.push('/services');
     } else {
-      if (name === "") {
-        alert("Falha na edição: Nome não pode ficar em branco");
+      if (name === '') {
+        alert('Falha na edição: Nome não pode ficar em branco');
       }
     }
   };

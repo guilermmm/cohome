@@ -1,44 +1,44 @@
-import Button from "@/components/Button";
-import Input from "@/components/Input";
-import axios from "axios";
-import { postItem } from "@/services/routes/item";
-import { useMutation, useQuery } from "react-query";
-import Link from "next/link";
-import { useRouter } from "next/router";
-import React, { FormEvent, useEffect, useState } from "react";
-import NavBar from "@/components/NavBar";
-import TextArea from "@/components/TextArea";
-import { getOneGroup } from "@/services/routes/group";
-import { getCategory } from "@/services/routes/category";
-import Select from "@/components/Select";
+import Button from '@/components/Button';
+import Input from '@/components/Input';
+import axios from 'axios';
+import { postItem } from '@/services/routes/item';
+import { useMutation, useQuery } from 'react-query';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import React, { FormEvent, useEffect, useState } from 'react';
+import NavBar from '@/components/NavBar';
+import TextArea from '@/components/TextArea';
+import { getOneGroup } from '@/services/routes/group';
+import { getCategory } from '@/services/routes/category';
+import Select from '@/components/Select';
 
 const Create = () => {
   const router = useRouter();
-  if (typeof window !== "undefined" && !localStorage.getItem("token")) {
-    router.push("/login");
+  if (typeof window !== 'undefined' && !localStorage.getItem('token')) {
+    router.push('/login');
   }
-  const [userId, setUserId] = useState("");
+  const [userId, setUserId] = useState('');
 
   useEffect(() => {
-    setUserId((localStorage?.getItem("userId") as string) ?? "");
+    setUserId((localStorage?.getItem('userId') as string) ?? '');
 
-    if (!localStorage.getItem("token")) router.push("/");
+    if (!localStorage.getItem('token')) router.push('/');
   }, [router]);
 
   const group = useQuery({
-    queryKey: ["group", userId],
+    queryKey: ['group', userId],
     queryFn: () => getOneGroup(userId as string),
   });
 
   const categories = useQuery({
-    queryKey: ["categories"],
+    queryKey: ['categories'],
     queryFn: () => getCategory(),
   }).data?.data;
 
-  const [name, setName] = useState("");
-  const [value, setValue] = useState("");
-  const [categoryId, setCategoryId] = useState("");
-  const [description, setDescription] = useState("");
+  const [name, setName] = useState('');
+  const [value, setValue] = useState('');
+  const [categoryId, setCategoryId] = useState('');
+  const [description, setDescription] = useState('');
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -47,17 +47,17 @@ const Create = () => {
         name,
         itemData: {
           value,
-          description: description === "" ? undefined : description,
+          description: description === '' ? undefined : description,
         },
         categoryId,
         groupId: group.data?.data.id as string,
       });
     } else {
-      if (name === "") {
-        alert("Falha na criação: Nome não pode ficar em branco");
+      if (name === '') {
+        alert('Falha na criação: Nome não pode ficar em branco');
       }
-      if (categoryId === "") {
-        alert("Falha na edição: Categoria não pode ficar em branco");
+      if (categoryId === '') {
+        alert('Falha na edição: Categoria não pode ficar em branco');
       }
     }
   };
@@ -65,11 +65,11 @@ const Create = () => {
   const createItem = useMutation({
     mutationFn: postItem,
     onSuccess: (e) => {
-      router.push("/items");
+      router.push('/items');
     },
     onError: (e) => {
       if (axios.isAxiosError(e)) {
-        alert("Falha no cadastro: " + e.message);
+        alert('Falha no cadastro: ' + e.response?.data.message);
       }
     },
   });
@@ -125,7 +125,7 @@ const Create = () => {
           </div>
         ) : (
           <div className="flex justify-center mt-10">
-            {" "}
+            {' '}
             <h1 className="text-cyan-800 font-bold text-xl">
               Você não está em nenhum grupo
             </h1>

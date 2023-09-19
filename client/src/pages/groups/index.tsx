@@ -1,35 +1,35 @@
-import Button from "@/components/Button";
-import Input from "@/components/Input";
-import NavBar from "@/components/NavBar";
+import Button from '@/components/Button';
+import Input from '@/components/Input';
+import NavBar from '@/components/NavBar';
 import {
   deleteGroup,
   deleteGroupMember,
   getOneGroup,
   postGroup,
-} from "@/services/routes/group";
-import axios from "axios";
-import { useRouter } from "next/router";
-import { FormEvent, useEffect, useState } from "react";
-import { useMutation, useQuery } from "react-query";
-import { Trash2 } from "lucide-react";
+} from '@/services/routes/group';
+import axios from 'axios';
+import { useRouter } from 'next/router';
+import { FormEvent, useEffect, useState } from 'react';
+import { useMutation, useQuery } from 'react-query';
+import { Trash2 } from 'lucide-react';
 
 export default function Groups() {
   const router = useRouter();
-  if (typeof window !== "undefined" && !localStorage.getItem("token")) {
-    router.push("/login");
+  if (typeof window !== 'undefined' && !localStorage.getItem('token')) {
+    router.push('/login');
   }
 
-  const [name, setName] = useState("");
-  const [userId, setUserId] = useState("");
+  const [name, setName] = useState('');
+  const [userId, setUserId] = useState('');
 
   useEffect(() => {
-    setUserId((localStorage?.getItem("userId") as string) ?? "");
+    setUserId((localStorage?.getItem('userId') as string) ?? '');
 
-    if (!localStorage.getItem("token")) router.push("/");
+    if (!localStorage.getItem('token')) router.push('/');
   }, [router]);
 
   const group = useQuery({
-    queryKey: ["group", userId],
+    queryKey: ['group', userId],
     queryFn: () => getOneGroup(userId as string),
   });
 
@@ -41,8 +41,8 @@ export default function Groups() {
         userId,
       });
     } else {
-      if (name === "") {
-        alert("Falha na criação: Nome não pode ficar em branco");
+      if (name === '') {
+        alert('Falha na criação: Nome não pode ficar em branco');
       }
     }
   };
@@ -54,7 +54,7 @@ export default function Groups() {
     },
     onError: (e) => {
       if (axios.isAxiosError(e)) {
-        alert("Falha no cadastro: " + e.response?.data);
+        alert('Falha no cadastro: ' + e.response?.data);
       }
     },
   });
@@ -62,13 +62,13 @@ export default function Groups() {
   const removeGroup = useMutation({
     mutationFn: deleteGroup,
     onSuccess: () => {
-      setName("");
+      setName('');
       group.remove();
       group.refetch();
     },
     onError: (e) => {
       if (axios.isAxiosError(e)) {
-        alert("Falha na remoção: " + e.message);
+        alert('Falha na remoção: ' + e.response?.data.message);
       }
     },
   });
@@ -80,7 +80,7 @@ export default function Groups() {
     },
     onError: (e) => {
       if (axios.isAxiosError(e)) {
-        alert("Falha na remoção: " + e.message);
+        alert('Falha na remoção: ' + e.response?.data.message);
       }
     },
   });
@@ -92,7 +92,7 @@ export default function Groups() {
         {group.data?.data.usersInGroup ? (
           <div className=" m-10 rounded-md min-w-fit bg-white flex flex-col gap-3 p-4">
             <div className="flex justify-between gap-10">
-              {" "}
+              {' '}
               <h1 className="text-cyan-800 font-bold text-xl">
                 Membros do grupo {group.data.data.name}
               </h1>
@@ -113,9 +113,9 @@ export default function Groups() {
                 >
                   <div>{userInGroup.user.name}</div>
                   <div className="text-xs text-cyan-700 italic font-medium">
-                    {userInGroup.isAdmin && " Administrador"}
+                    {userInGroup.isAdmin && ' Administrador'}
                     <div className="text-xs text-red-700 italic font-medium">
-                      {" "}
+                      {' '}
                       {!userInGroup.isAdmin && (
                         <button
                           className="text-sm h-3"
@@ -140,7 +140,7 @@ export default function Groups() {
               <Button
                 color="cyan"
                 text="Adicionar Membro"
-                onClick={() => router.push("/groups/newmember")}
+                onClick={() => router.push('/groups/newmember')}
               />
             </div>
           </div>
