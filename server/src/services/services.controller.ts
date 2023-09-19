@@ -6,6 +6,8 @@ import {
   Patch,
   Param,
   Delete,
+  HttpStatus,
+  HttpCode,
 } from '@nestjs/common';
 import { ServicesService } from './services.service';
 import { CreateServiceDto } from './dto/create-service.dto';
@@ -35,11 +37,17 @@ export class ServicesController {
     return this.servicesService.findByGroup(groupId);
   }
 
+  @Get('history/:id')
+  findHistory(@Param('id') id: string) {
+    return this.servicesService.findHistory(id);
+  }
+
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateServiceDto: UpdateServiceDto) {
     return this.servicesService.update(id, updateServiceDto);
   }
 
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.servicesService.remove(id);

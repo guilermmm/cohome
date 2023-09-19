@@ -42,6 +42,11 @@ export class ItemsController {
     return this.itemsService.findByCategory(categoryId);
   }
 
+  @Get('history/:id')
+  findHistory(@Param('id') id: string) {
+    return this.itemsService.findHistory(id);
+  }
+
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateItemDto: UpdateItemDto) {
     return this.itemsService.update(id, updateItemDto);

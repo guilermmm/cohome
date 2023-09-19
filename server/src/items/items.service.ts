@@ -1,6 +1,5 @@
 import {
-  HttpCode,
-  HttpStatus,
+  BadRequestException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -40,6 +39,10 @@ export class ItemsService {
     return this.prisma.item.findMany({
       include: {
         group: true,
+        itemData: {
+          orderBy: { createdAt: 'desc' },
+          take: 1,
+        },
       },
     });
   }
@@ -71,14 +74,38 @@ export class ItemsService {
     });
   }
 
-  update(id: string, updateItemDto: UpdateItemDto) {
-    return this.prisma.item.update({
-      where: { id },
-      data: updateItemDto,
+  findLatestItemData(itemId: string) {
+    return this.prisma.itemData.findFirst({
+      where: { itemId },
+      orderBy: { createdAt: 'desc' },
     });
   }
 
-  @HttpCode(HttpStatus.NO_CONTENT)
+  findHistory(itemId: string) {
+    return this.prisma.itemData.findMany({
+      where: { itemId },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  async update(id: string, updateItemDto: UpdateItemDto) {
+    const itemData = await this.findLatestItemData(id);
+
+    if (!itemData) throw new NotFoundException(`Item não encontrado`);
+
+    return this.prisma.itemData.create({
+      data: {
+        description: updateItemDto.description || itemData.description,
+        value: updateItemDto.value || itemData.value,
+        item: {
+          connect: {
+            id,
+          },
+        },
+      },
+    });
+  }
+
   remove(id: string) {
     return this.prisma.item.delete({
       where: { id },
@@ -86,10 +113,7 @@ export class ItemsService {
   }
 
   async assignUserToItem(itemId: string, userId: string) {
-    const itemData = await this.prisma.itemData.findFirst({
-      where: { itemId },
-      orderBy: { createdAt: 'desc' },
-    });
+    const itemData = await this.findLatestItemData(itemId);
 
     if (!itemData) throw new NotFoundException(`Item não encontrado`);
 
@@ -104,14 +128,41 @@ export class ItemsService {
           },
         },
       });
+
+    return this.prisma.itemData.create({
+      data: {
+        description: itemData.description,
+        value: itemData.value,
+        user: {
+          connect: {
+            id: userId,
+          },
+        },
+        item: {
+          connect: {
+            id: itemId,
+          },
+        },
+      },
+    });
   }
 
-  removeUserFromItem(itemId: string) {
-    return this.prisma.item.update({
-      where: { id: itemId },
+  async removeUserFromItem(itemId: string) {
+    const itemData = await this.findLatestItemData(itemId);
+
+    if (!itemData) throw new NotFoundException(`Item não encontrado`);
+
+    if (!itemData?.userId)
+      throw new BadRequestException(`Item não está atribuído a nenhum usuário`);
+
+    return this.prisma.itemData.create({
       data: {
-        user: {
-          disconnect: true,
+        description: itemData.description,
+        value: itemData.value,
+        item: {
+          connect: {
+            id: itemId,
+          },
         },
       },
     });
